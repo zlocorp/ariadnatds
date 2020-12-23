@@ -1,5 +1,5 @@
-# user config
-.idea/sonarlint/issuestore
+# User config
+.idea/sonarlint/issuestore/**
 
 # Created by .ignore support plugin (hsz.mobi)
 ### JetBrains template
