@@ -47,17 +47,17 @@ function findLink($pdo, $link)
 /**
  * @param PDO $pdo
  * @param string $link
- * @return string
+ * @return ?string
  */
-function getRedirectLink($pdo, $link): string
+function getRedirectLink($pdo, $link): ?string
 {
     /** @var PDO $pdo */
     if (empty($link)) {
-        return 'Not found ((';
+        return null;
     }
 
-    $stm = $pdo->prepare('SELECT `redirect_to` FROM `links` WHERE `redirect_from` = :redirect_from');
-    $stm->execute(['redirect_from' => $link]);
+    $stm = $pdo->prepare('SELECT `redirect_to` FROM `links` WHERE `redirect_from` = :redirect_from AND `status` = :status');
+    $stm->execute(['redirect_from' => $link, 'status' => 1]);
     $redirect = $stm->fetchColumn();
 
     return $redirect;
@@ -68,12 +68,8 @@ function getRedirectLink($pdo, $link): string
  * @param string $link
  * @return void
  */
-function updateCount($pdo, $link): string
+function updateCount($pdo, $link): void
 {
-    if (empty($link)) {
-        return false;
-    }
-
     $query = "UPDATE `links` SET `count` = `count`+1, `updated_at` = UNIX_TIMESTAMP() WHERE `redirect_from` = :redirect_from";
     $params = [
         ':redirect_from' => $link,
